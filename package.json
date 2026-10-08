@@ -1,1 +1,16 @@
-{"name":"ticket-qr-code-generator-worker","version":"0.1.0","private":true,"type":"module","scripts":{"test":"node --test","test:watch":"node --test --watch"},"engines":{"node":">=20"}}
+{
+  "name": "ticket-qr-code-generator-worker",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:watch": "node --test --watch"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
