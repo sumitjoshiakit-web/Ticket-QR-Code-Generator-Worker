@@ -1,4 +1,15 @@
 export class DomainError extends Error {
-  constructor(code, message, fields = {}) { super(message); this.name = "DomainError"; this.code = code; this.fields = fields; }
+  constructor(code, message, fields = {}) {
+    super(message);
+    this.name = "DomainError";
+    this.code = code;
+    this.fields = fields;
+  }
 }
-export const ERROR_CODES = Object.freeze({ INVALID_INPUT: "INVALID_INPUT", INVALID_TICKET_STATUS: "INVALID_TICKET_STATUS" });
+
+export const ERROR_CODES = Object.freeze({
+  INVALID_INPUT: "INVALID_INPUT",
+  INVALID_TICKET_STATUS: "INVALID_TICKET_STATUS",
+  DUPLICATE_GENERATION: "DUPLICATE_GENERATION",
+  PERSISTENCE_FAILURE: "PERSISTENCE_FAILURE",
+});
