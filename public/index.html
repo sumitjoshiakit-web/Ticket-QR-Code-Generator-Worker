@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Accessible Ticket QR Code Generator Worker"><title>Ticket QR Code Generator Worker</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="shell">
+<header class="header"><div><p class="eyebrow">OPERATIONS WORKER</p><h1>Ticket QR Code Generator</h1><p class="muted">Create a reliable, structured QR record for an active ticket.</p></div><span class="status">Ready</span></header>
+<section class="card" aria-labelledby="form-title"><div class="card-heading"><div><h2 id="form-title">Ticket details</h2><p class="muted">Enter the information used to generate the QR code.</p></div></div>
+<form id="ticket-form" novalidate>
+<div class="grid">
+<label for="ticketNumber">Ticket number<input id="ticketNumber" name="ticketNumber" maxlength="64" required aria-describedby="ticketNumber-error"><span id="ticketNumber-error" class="error" role="alert"></span></label>
+<label for="holderName">Holder name<input id="holderName" name="holderName" maxlength="160" required aria-describedby="holderName-error"><span id="holderName-error" class="error" role="alert"></span></label>
+<label for="eventName">Event name<input id="eventName" name="eventName" maxlength="200" required aria-describedby="eventName-error"><span id="eventName-error" class="error" role="alert"></span></label>
+<label for="quantity">Quantity<input id="quantity" name="quantity" type="number" min="1" step="1" required aria-describedby="quantity-error"><span id="quantity-error" class="error" role="alert"></span></label>
+</div>
+<label for="status">Status<select id="status" name="status" aria-describedby="status-error"><option value="active">Active</option><option value="used">Used</option><option value="cancelled">Cancelled</option></select><span id="status-error" class="error" role="alert"></span></label>
+<button id="generate" type="submit">Generate QR code</button><p id="form-status" class="status-message" role="status" aria-live="polite"></p>
+</form></section>
+<section id="result" class="card result" aria-labelledby="result-title" hidden><div class="card-heading"><div><h2 id="result-title">Generated QR</h2><p class="muted">Scan or download the generated ticket code.</p></div></div>
+<div id="qr" class="qr" aria-label="Generated QR code"></div><dl id="summary" class="summary"></dl><a id="download" class="button-link" download="ticket-qr.svg">Download QR</a></section>
+<section id="empty" class="empty" hidden aria-live="polite"><h2>No data found</h2><p>Generate a ticket QR code to see the result here.</p></section>
+</main><script src="/app.js" defer></script>
+</body></html>
