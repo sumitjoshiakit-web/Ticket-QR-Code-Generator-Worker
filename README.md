@@ -1,34 +1,31 @@
 # Ticket QR Code Generator Worker
 
-A digital Ticket QR Code Generator Worker designed to streamline ticket QR generation with reliable validation, error handling, accessibility, and a structured data architecture.
+A digital operational worker that replaces paper/Excel ticket handling with a reliable, accessible QR-generation workflow.
 
-## Project Status
+## Delivery status
 
-**Phase 1 — Architectural Planning**
+**Architecture first → working MVP**
 
-This repository currently contains the database schema, ERD, API contracts, validation/security rules, accessibility requirements, and project workflow defined from the supplied technical requirements.
+The project follows the required sequence: database schema, ERD, API contracts, security/accessibility rules, and architecture were defined first. The implementation was then built against those contracts.
 
-No production feature UI or QR-generation implementation is included in this phase.
+## Implemented
 
-## Core Goal
+- Accessible responsive worker interface.
+- Client and server validation with visible field errors.
+- XSS-oriented text sanitization before application state/persistence.
+- Loading state for asynchronous generation.
+- Recoverable network/server error state.
+- Explicit **No data found** empty state.
+- Deterministic structured QR payload with SHA-256 hash.
+- QR SVG generation.
+- Persistence abstraction with a local file adapter for the MVP.
+- Idempotent duplicate generation handling.
+- Required simulated analytics telemetry.
+- Security headers and no committed secrets.
+- Automated Node tests and ESLint configuration.
+- GitHub Actions CI for tests and lint.
 
-Replace a paper/Excel-driven ticket QR workflow with a reliable digital worker interface that:
-
-- accepts valid ticket data
-- validates malformed or missing input
-- generates a deterministic QR payload
-- handles empty/no-data states
-- communicates loading/slow-network states
-- preserves structured data consistency
-- remains keyboard accessible
-- safely handles user-controlled text
-- emits simulated analytics telemetry for completed primary actions
-
-## Planned Stack
-
-The implementation stack will be selected during the application phase. The current architecture is intentionally framework-neutral.
-
-## Documentation
+## Architecture-first documents
 
 - [Architecture](docs/architecture.md)
 - [Database Schema](docs/database-schema.md)
@@ -38,6 +35,47 @@ The implementation stack will be selected during the application phase. The curr
 - [Accessibility & Security](docs/accessibility-and-security.md)
 - [AI Prompt Traceability](PROMPTS.md)
 
-## Definition of Done
+## Run locally
 
-The final application must compile/run without fatal errors, have zero ESLint warnings, satisfy the happy/unhappy paths, meet accessibility requirements, avoid hardcoded secrets/PII, and keep the AI-assisted workflow traceable.
+Requires Node.js 20+.
+
+```bash
+npm install
+npm test
+npm run lint
+npm start
+```
+
+Open `http://localhost:3000`.
+
+The default persistence file is `data/generations.json`. Set `DATA_FILE` for another location.
+
+## API
+
+### Health
+`GET /api/health`
+
+### Generate QR
+`POST /api/tickets/qr`
+
+Example:
+```json
+{
+  "ticketNumber": "TKT-000123",
+  "holderName": "Example Holder",
+  "eventName": "Example Event",
+  "quantity": 2,
+  "status": "active"
+}
+```
+
+### Get generation
+`GET /api/generations/:id`
+
+## Production persistence
+
+The application uses a repository abstraction. The architecture documents the MongoDB schema; the current MVP uses a local file adapter so it can run without credentials. A production deployment can swap this adapter for the documented MongoDB implementation without changing the domain contract.
+
+## AI traceability
+
+`PROMPTS.md` records the actual AI-assisted workflow. It does not claim Antigravity usage that did not occur.
