@@ -1,0 +1,5 @@
+import test from "node:test"; import assert from "node:assert/strict"; import { generateTicketQr } from "../src/application/generate-ticket-qr.js";
+const ticket={id:"internal-id",ticketNumber:"TKT-000123",holderName:"Example Holder",eventName:"Example Event",quantity:2,status:"active"};
+test("generates deterministic result for an active ticket",()=>{const r=generateTicketQr(ticket,"2026-10-08T10:00:00.000Z");assert.equal(r.ticketNumber,"TKT-000123");assert.equal(r.payloadVersion,"v1");assert.equal(r.generatedAt,"2026-10-08T10:00:00.000Z");assert.equal(r.payload.ticketNumber,"TKT-000123");assert.equal("id" in r.payload,false);assert.match(r.payloadHash,/^[a-f0-9]{64}$/)});
+test("blocks used and cancelled tickets",()=>{for(const status of ["used","cancelled"]) assert.throws(()=>generateTicketQr({...ticket,status}),e=>{assert.equal(e.code,"INVALID_TICKET_STATUS");return true})});
+test("rejects invalid generation time",()=>assert.throws(()=>generateTicketQr(ticket,"not-a-date"),/invalid/i));
