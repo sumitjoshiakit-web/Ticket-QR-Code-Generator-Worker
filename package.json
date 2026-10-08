@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "description": "Accessible digital Ticket QR Code Generator Worker with reliable validation, QR generation, persistence abstraction, and shareable results.",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node src/server.js",
     "test": "node --test",
@@ -15,6 +17,7 @@
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
-    "eslint": "^9.39.1"
+    "eslint": "^9.39.1",
+    "globals": "^16.4.0"
   }
 }
