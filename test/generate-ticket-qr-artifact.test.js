@@ -18,7 +18,7 @@ test("generates a complete QR artifact for an active ticket", async () => {
     { ticketNumber: "TKT-1001", payloadVersion: "v1", generatedAt: "2026-10-08T10:00:00.000Z", status: "generated", format: "svg" },
   );
   assert.match(result.payloadHash, /^[a-f0-9]{64}$/);
-  assert.match(result.qrSvg, /^<svg[\\s\\S]*<\\/svg>$/);
+  assert.match(result.qrSvg, /^<svg[\\s\\S]*<\/svg>$/);
 });
 
 test("produces the same artifact metadata and QR for the same ticket", async () => {
