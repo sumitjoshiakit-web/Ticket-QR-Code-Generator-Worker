@@ -1,46 +1,34 @@
 # API Contracts
 
-These contracts define the intended API boundary. They are implementation-neutral and can be mapped to REST routes during the application phase.
+The architecture-first API contract is now implemented by the Node runtime.
 
-## GET /api/tickets/:ticketNumber
+## GET /api/health
 
-Retrieve one ticket by its human-facing ticket number.
+Health check used by deployment infrastructure.
 
 ### Success — 200
 
 ```json
 {
-  "data": {
-    "id": "uuid",
-    "ticketNumber": "TKT-000123",
-    "holderName": "Example Holder",
-    "eventName": "Example Event",
-    "quantity": 2,
-    "status": "active"
-  }
+  "ok": true,
+  "service": "ticket-qr-code-generator-worker",
+  "version": "1.0.0"
 }
 ```
 
-### Empty / Not Found — 404
+## POST /api/tickets/qr
 
-```json
-{
-  "error": {
-    "code": "TICKET_NOT_FOUND",
-    "message": "No data found."
-  }
-}
-```
-
-## POST /api/tickets/:ticketNumber/qr
-
-Generate a QR representation for an existing valid ticket.
+Validate ticket input, generate a deterministic QR payload, persist a generation record, and return an SVG QR document.
 
 ### Request
 
 ```json
 {
-  "payloadVersion": "v1"
+  "ticketNumber": "TKT-000123",
+  "holderName": "Example Holder",
+  "eventName": "Example Event",
+  "quantity": 2,
+  "status": "active"
 }
 ```
 
@@ -49,11 +37,19 @@ Generate a QR representation for an existing valid ticket.
 ```json
 {
   "data": {
-    "qrGenerationId": "uuid",
-    "ticketNumber": "TKT-000123",
+    "generationId": "gen_...",
+    "ticket": {
+      "ticketNumber": "TKT-000123",
+      "holderName": "Example Holder",
+      "eventName": "Example Event",
+      "quantity": 2,
+      "status": "active"
+    },
     "payloadVersion": "v1",
     "payloadHash": "sha256",
-    "generatedAt": "2026-10-06T00:00:00Z"
+    "generatedAt": "2026-10-08T00:00:00Z",
+    "reused": false,
+    "qrSvg": "<svg>...</svg>"
   }
 }
 ```
@@ -72,33 +68,62 @@ Generate a QR representation for an existing valid ticket.
 }
 ```
 
-### Not Found — 404
+### Not Found / Empty — 404
+
+Unknown routes and missing generation records return:
 
 ```json
 {
   "error": {
-    "code": "TICKET_NOT_FOUND",
+    "code": "NOT_FOUND",
     "message": "No data found."
   }
 }
 ```
 
-### Connectivity / Server Failure — 503
+### Service Failure — 503
+
+Persistence failures are mapped to a recoverable service error:
 
 ```json
 {
   "error": {
-    "code": "SERVICE_UNAVAILABLE",
-    "message": "The service is temporarily unavailable. Please try again."
+    "code": "PERSISTENCE_FAILURE",
+    "message": "The QR was generated but its generation record could not be persisted."
   }
 }
 ```
 
-## API Rules
+### Internal Failure — 500
 
-- JSON request/response format.
-- Never expose internal database errors to the user.
-- Stable machine-readable error codes.
-- Human-readable messages suitable for UI display.
-- Server validates all input even when client validation already ran.
-- No secrets or credentials in request payloads.
+Unexpected failures never expose internal database/runtime details:
+
+```json
+{
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "Something went wrong. Please try again."
+  }
+}
+```
+
+## GET /api/generations/:id
+
+Retrieve a previously persisted generation record.
+
+### Success — 200
+
+Returns the stored generation record under `data`.
+
+### Missing record — 404
+
+Returns the standard **No data found.** response.
+
+## API rules
+
+- JSON request/response format for API operations.
+- Server-side validation is authoritative.
+- User-controlled text is sanitized before persistence.
+- Stable machine-readable error codes are returned.
+- Human-readable messages are suitable for UI display.
+- No secrets or credentials are accepted in request payloads.
