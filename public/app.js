@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 const form=document.querySelector("#ticket-form"),result=document.querySelector("#result"),empty=document.querySelector("#empty"),statusMessage=document.querySelector("#form-status"),button=document.querySelector("#generate");
 const fields=["ticketNumber","holderName","eventName","quantity","status"];
 function sanitize(value,max){return String(value??"").replace(/<[^>]*>/g,"").replace(/javascript\s*:/gi,"").replace(/on[a-z]+\s*=\s*/gi,"").replace(/[\u0000-\u001F\u007F]/g,"").trim().slice(0,max)}
