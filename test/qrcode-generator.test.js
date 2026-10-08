@@ -15,7 +15,7 @@ test("generates a valid SVG QR document from the ticket payload", async () => {
   const payload = buildQrPayload(ticket);
   const svg = await generateQrSvg(payload);
 
-  assert.match(svg, /<svg[\\s\\S]*<\\/svg>/);
+  assert.match(svg, /<svg[\s\S]*<\/svg>/);
   assert.match(svg, /viewBox=/);
   assert.match(svg, /<path/);
 });
