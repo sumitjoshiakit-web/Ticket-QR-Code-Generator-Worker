@@ -78,4 +78,4 @@ The application uses a repository abstraction. The architecture documents the Mo
 
 ## AI traceability
 
-`PROMPTS.md` records the actual AI-assisted workflow. It does not claim Antigravity usage that did not occur.
+`PROMPTS.md` records the actual AI-assisted workflow. 
